@@ -11,16 +11,16 @@
 
 
 <div class="flex justify-center">
-    <div class="mt-5 w-7/12 pr-5 pl-5 rounded-lg justify-between" id="pendingtask">
+    <div class="mt-5 w-7/12 pr-5 pl-5 rounded-lg justify-between" id="pendingtasks">
         <div class="font-medium border-2 w-full mb-2 mt-2 rouded-lg"> Pending Tasks... </div>
         @if ($pendingTasks)
             @foreach ($pendingTasks as $task)
-                <div id="{{$task->id}}" class="bg-gray-100 border-2 w-full flex justify-between p-3 rouded-lg"> 
+                <div id="p{{$task->id}}" class="bg-gray-100 border-2 w-full flex justify-between p-3 rouded-lg"> 
                     <i class="mt-1 text-gray-300 far fa-square cursor-pointer" onclick="moveTaskTo({{$task->id}}, 1)"></i>
                     <div class="w-10/12">
                         {{$task->name}}
                     </div>
-                    <i class="mt-1 fas fa-trash-alt text-gray-300 cursor-pointer" onclick="deleteTask({{$task->id}})"></i>
+                    <i class="mt-1 fas fa-trash-alt text-gray-300 cursor-pointer" onclick="deleteTask('p', {{$task->id}})"></i>
                 </div>
             @endforeach
     
@@ -30,16 +30,16 @@
 </div>
 
 <div class="flex justify-center">
-    <div class="mt-5 w-7/12 pr-5 pl-5 rounded-lg justify-between" id="pendingtask">
+    <div class="mt-5 w-7/12 pr-5 pl-5 rounded-lg justify-between" id="completedtasks">
         <div class="font-medium border-2 w-full mb-2 mt-2 rouded-lg"> Completed Tasks... </div>
         @if ($completedTasks)
             @foreach ($completedTasks as $task)
-                <div id="{{$task->id}}" class="bg-red-200 border-2 w-full flex justify-between p-3 rouded-lg"> 
+                <div id="c{{$task->id}}" class="bg-red-200 border-2 w-full flex justify-between p-3 rouded-lg"> 
                     <i class="mt-1 far fa-check-square cursor-pointer" onclick="moveTaskTo({{$task->id}}, 0)"></i>
                     <div class="w-10/12 line-through">
                         {{$task->name}}
                     </div>
-                    <i class="mt-1 fas fa-trash-alt cursor-pointer" onclick="deleteTask({{$task->id}})"></i>
+                    <i class="mt-1 fas fa-trash-alt cursor-pointer" onclick="deleteTask('c', {{$task->id}})"></i>
                 </div>
             @endforeach
         @endif 
@@ -58,7 +58,29 @@
                     'Authorization': 'Bearer {{auth()->user()->api_token}}'
                 },
                 success: (resp) =>  {
-                    console.log(resp)
+                    if(resp.status && state==1){
+                        $(`#p${resp.taskObject.id}`).remove()
+                        $('#completedtasks').append(`
+                        <div id="c${resp.taskObject.id}" class="bg-red-200 border-2 w-full flex justify-between p-3 rouded-lg"> 
+                            <i class="mt-1 far fa-check-square cursor-pointer" onclick="moveTaskTo(${resp.taskObject.id}, 0)"></i>
+                            <div class="w-10/12 line-through">
+                                ${resp.taskObject.name}
+                            </div>
+                            <i class="mt-1 fas fa-trash-alt cursor-pointer" onclick="deleteTask('c', ${resp.taskObject.id})"></i>
+                        </div>
+                        `)
+                    } else if (resp.status && state==0){
+                        $(`#c${resp.taskObject.id}`).remove()
+                        $('#pendingtasks').append(`
+                        <div id="p${resp.taskObject.id}" class="bg-gray-100 border-2 w-full flex justify-between p-3 rouded-lg"> 
+                            <i class="mt-1 text-gray-300 far fa-square cursor-pointer" onclick="moveTaskTo(${resp.taskObject.id}, 0)"></i>
+                            <div class="w-10/12">
+                                ${resp.taskObject.name}
+                            </div>
+                            <i class="mt-1 fas fa-trash-alt text-gray-300 cursor-pointer" onclick="deleteTask('p', ${resp.taskObject.id})"></i>
+                        </div>
+                        `)
+                    }
                 }
 
             });
@@ -66,7 +88,7 @@
             
         }
 
-        function deleteTask(id){
+        function deleteTask(from, id){
             $.ajax({
                 type: "DELETE",
                 url: `/api/tasks/${id}`,
@@ -75,7 +97,7 @@
                     'Authorization': 'Bearer {{auth()->user()->api_token}}'
                 },
                 success: (resp) =>  {
-                    console.log(resp)
+                    $(`#${from}${id}`).remove()
                 }
 
             });
@@ -95,7 +117,15 @@
                     'Authorization': 'Bearer {{auth()->user()->api_token}}'
                 },
                 success: (resp) =>  {
-                    console.log(resp)
+                    $('#pendingtasks').append(`
+                        <div id="p${resp.taskObject.id}" class="bg-gray-100 border-2 w-full flex justify-between p-3 rouded-lg"> 
+                            <i class="mt-1 text-gray-300 far fa-square cursor-pointer" onclick="moveTaskTo(${resp.taskObject.id}, 1)"></i>
+                            <div class="w-10/12">
+                                ${resp.taskObject.name}
+                            </div>
+                            <i class="mt-1 fas fa-trash-alt text-gray-300 cursor-pointer" onclick="deleteTask('p', ${resp.taskObject.id})"></i>
+                        </div>
+                    `)
                 }
 
             });
