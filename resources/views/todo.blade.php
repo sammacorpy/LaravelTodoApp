@@ -88,7 +88,7 @@
 
             $.ajax({
                 type: "POST",
-                url: `/api/tasks/`,
+                url: `/api/tasks`,
                 data: {name},
                 dataType:'json',
                 headers:{
