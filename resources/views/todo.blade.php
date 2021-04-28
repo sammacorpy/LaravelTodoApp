@@ -75,7 +75,7 @@
                         $(`#c${resp.taskObject.id}`).remove()
                         $('#pendingtasks').append(`
                         <div id="p${resp.taskObject.id}" class="bg-gray-100 border-2 w-full flex justify-between p-3 rouded-lg"> 
-                            <i class="mt-1 text-gray-300 far fa-square cursor-pointer" onclick="moveTaskTo(${resp.taskObject.id}, 0)"></i>
+                            <i class="mt-1 text-gray-300 far fa-square cursor-pointer" onclick="moveTaskTo(${resp.taskObject.id}, 1)"></i>
                             <div class="w-10/12">
                                 ${resp.taskObject.name}
                             </div>
