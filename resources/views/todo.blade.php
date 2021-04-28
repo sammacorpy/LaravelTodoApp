@@ -59,6 +59,7 @@
                 },
                 success: (resp) =>  {
                     if(resp.status && state==1){
+                        if ($('#completedtasks').has(`#c${resp.taskObject.id}`).length) return
                         $(`#p${resp.taskObject.id}`).remove()
                         $('#completedtasks').append(`
                         <div id="c${resp.taskObject.id}" class="bg-red-200 border-2 w-full flex justify-between p-3 rouded-lg"> 
@@ -70,6 +71,7 @@
                         </div>
                         `)
                     } else if (resp.status && state==0){
+                        if ($('#pendingtasks').has(`#p${resp.taskObject.id}`).length) return
                         $(`#c${resp.taskObject.id}`).remove()
                         $('#pendingtasks').append(`
                         <div id="p${resp.taskObject.id}" class="bg-gray-100 border-2 w-full flex justify-between p-3 rouded-lg"> 
@@ -117,6 +119,7 @@
                     'Authorization': 'Bearer {{auth()->user()->api_token}}'
                 },
                 success: (resp) =>  {
+                    if ($('#pendingtasks').has(`#p${resp.taskObject.id}`).length) return
                     $('#pendingtasks').append(`
                         <div id="p${resp.taskObject.id}" class="bg-gray-100 border-2 w-full flex justify-between p-3 rouded-lg"> 
                             <i class="mt-1 text-gray-300 far fa-square cursor-pointer" onclick="moveTaskTo(${resp.taskObject.id}, 1)"></i>
