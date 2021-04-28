@@ -3,8 +3,8 @@
 @section('body-container')
 <div class="flex justify-center">
     <div class="mt-10 w-7/12 p-5 flex rounded-lg justify-between">
-        <label for="email" class="sr-only"></label>
-        <input type="text" name="name" id="taskinput" placeholder="Add your tasks here...." class="bg-white-100 border-2 w-9/12 p-4 rouded-lg">    
+        <label for="name" class="sr-only"></label>
+        <input type="text" name="name" id="taskinput" placeholder="Add your tasks here...." class="bg-white-100 border-2 w-9/12 p-4 rouded-xl">    
         <button class="bg-blue-300 w-2/12 p-4 rounded-xl" onclick="addTask()">Add Task</button>
     </div>
 </div>
